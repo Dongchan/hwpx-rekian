@@ -36,6 +36,8 @@ from zipfile import ZIP_DEFLATED, ZIP_STORED, ZipFile
 
 from lxml import etree
 
+from rekian_xml import clear_linesegarrays
+
 # Resolve paths relative to this script
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
@@ -51,6 +53,20 @@ def validate_xml(filepath: Path) -> None:
         etree.parse(str(filepath))
     except etree.XMLSyntaxError as e:
         raise SystemExit(f"Malformed XML in {filepath.name}: {e}")
+
+
+def normalize_section_layout(section_xml: Path) -> None:
+    """Remove stale Hancom line layout caches after section replacement."""
+    tree = etree.parse(str(section_xml))
+    root = tree.getroot()
+    removed = clear_linesegarrays(root)
+    if removed:
+        tree.write(
+            str(section_xml),
+            pretty_print=True,
+            xml_declaration=True,
+            encoding="UTF-8",
+        )
 
 
 def update_metadata(content_hpf: Path, title: str | None, creator: str | None) -> None:
@@ -196,6 +212,7 @@ def build(
             if not section_override.is_file():
                 raise SystemExit(f"Section file not found: {section_override}")
             shutil.copy2(section_override, work / "Contents" / "section0.xml")
+            normalize_section_layout(work / "Contents" / "section0.xml")
 
         # 4. Update metadata
         update_metadata(work / "Contents" / "content.hpf", title, creator)

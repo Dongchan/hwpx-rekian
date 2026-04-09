@@ -25,6 +25,7 @@ https://www.hancom.com/support/downloadCenter/download 에서 다운로드하세
 - HWPX(XML 기반 한글 파일) 생성·편집·파싱
 - 외부 프로그램 없이 동작 (한컴오피스 불필요)
 - 표, 문단, 서식, 페이지 나누기 지원
+- 재기안 시 `linesegarray` 제거, leaf paragraph 기준 치환, 불렛 prefix 보존 같은 XML 후처리 규칙을 적용 가능
 
 ### 2. `hwp-com-writer` — HWP COM + HWPX 하이브리드 스킬
 - 한컴 COM API로 정밀 문서 생성
